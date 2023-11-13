@@ -1,0 +1,259 @@
+/*
+* Purpose: Define an array structure definition named ShoeRecord suitable for a shoe records of the type illustrated below:
+  (SAMPLE OUTPUT)
+  StockNumber          ShoeType          ShoeBrand          DatePurchase          shoeQuantity          shoeCost          TotalValue
+  12345-10             Wedge             Figlia             9-29-2011             10                    Php999.00         Php9990.00
+  54678-01             Flats             Aldo               6-17-2010             20                    Php3550.50        Php71010.00
+  • Prompt the user to input 10 numbers of Shoe records. Use name constant for the size.
+  • Use function void inputShoe(ShoeRecord getshoe[]) to enter the values of each field/member of the structure
+  • Use function void compVal (ShoeRecord tValue[]) to compute and calculate the value of TotalValue.
+  • Enter month, day and year for datePurchase. You must define another structure for the DatePurchase and name the struct as 
+  	datePurchase.(NESTED STRUCTURE- a struct within a struct)
+  • Use function setw to set the width of the output and use 2 decimal places for all the amount value.
+  • Use exception handling try-throw-catch method for the validation of the following:
+    o Stocknumber (length of 8 only)
+    o no. of shoes (1-20 only)
+    o shoeQuantity 5-50 only
+    o month 1-12 only, day 1-31 only and year 2000-2021 only.
+    o Ask the user to re-enter correct value for the mentioned validation.
+  • Save the data/record (same as the sample output) to a textfile named shoeInventory.txt
+*/
+
+
+#include <iostream>
+#include <iomanip>
+#include <fstream>
+#include <string>
+using namespace std;
+
+const int SIZE = 20; //Enables the user to input up to 20 numbers of Shoe records.
+
+struct DatePurchase //Display format for the date of purchase.
+{
+	int month, day, year;
+};//end-struct-DatePurchase
+
+struct ShoeRecord //Declaration of variables.
+{
+	string StockNumber, ShoeType, ShoeBrand;
+	DatePurchase datePurchase; 
+	int shoeQuantity, ShoeNum;
+	double shoeCost, TotalValue;
+} shoeRec [SIZE];//end-struct-ShoeRecord
+
+int getShoeNum(); //prompts the user to input their desired number of shoe records to be recorded and saved in a file.
+void inputShoe(ShoeRecord getShoe[], int numShoes); //to enter the values of each field/member of the structure.
+void compVal(ShoeRecord tValue[], int numShoes); //to compute and calculate the value of TotalValue.
+void saveData(ShoeRecord tValue[], int numShoes); //to save the data/record (same as the sample output) to a textfile named shoeInventory.txt.
+
+
+/////////////////////////////////// PROGRAM ///////////////////////////////////////////
+int main() 
+{
+	/////////////////////////////////// CALL FUNCTIONS ///////////////////////////////////////////
+	int totalShoeNum = getShoeNum(); 
+	inputShoe(shoeRec, totalShoeNum); 
+	compVal(shoeRec, totalShoeNum); 
+	saveData(shoeRec, totalShoeNum); 
+	return 0;
+}//end-int-main
+
+
+/////////////////////////////////// FUNCTIONS ///////////////////////////////////////////
+/////////////////////////////////// INT-GETSHOENUM ///////////////////////////////////////////
+int getShoeNum()
+{
+    int shoes;
+    bool validation = true;
+
+    while (validation) //makes sure the number inputted is between 1-20 before proceeding and enables the user to re-enter the value if not using try-throw-catch.
+    {
+		cout << "Enter No. of Shoes to be Recorded (1-20 shoes only): ";
+        cin >> shoes;
+        try
+        {
+            if (shoes > 20 || shoes < 1)
+            {
+                throw shoes;
+            }//end-if
+            validation = false;
+        }//end-try
+
+        catch (int shoes)
+        {
+            if (shoes > 20 || shoes < 1)
+                cout << "The range allowed to be inputted is 1-20 shoes only!" << endl;
+            else
+                cout << "The inputted number is invalid!" << endl;
+        }//end-catch
+    }//end-while
+
+    return shoes;
+}//end-int-getShoeNum
+
+/////////////////////////////////// VOID-INPUTSHOE ///////////////////////////////////////////
+void inputShoe(ShoeRecord getshoe[], int numShoes) 
+{
+	for (int i = 0; i < numShoes; i++) 
+	{ 	
+		system("cls");
+		cout << "SHOE " << "NUMBER " << i + 1 << endl;
+		/////////////////////////////////// STOCKNUMBER ///////////////////////////////////////////
+		bool inputVal = false;
+
+		while (!inputVal) //makes sure the number inputted is 8 characters long before proceeding and enables the user to re-enter the value if not using try-throw-catch.
+		{
+			try 
+			{
+				cout << "Enter the StockNumber (ex.12345-10): ";
+				cin >> getshoe[i].StockNumber;
+				if (getshoe[i].StockNumber.length() != 8) 
+				{
+					throw "Invalid Number! The stock number must be 8 characters long... Please re-enter the correct value";
+				}//end-if
+				inputVal = true;
+			}//end-try
+
+			catch (const char* msg) 
+			{ 
+				cout << msg << endl;
+			}//end-catch
+		}//end-while
+
+		/////////////////////////////////// SHOETYPE ///////////////////////////////////////////
+		cout << "Enter the ShoeType: ";
+		cin >> getshoe[i].ShoeType;
+
+		/////////////////////////////////// SHOEBRAND ///////////////////////////////////////////
+		cout << "Enter the ShoeBrand: ";
+		cin >> getshoe[i].ShoeBrand;
+
+		/////////////////////////////////// DATEPURCHASED ///////////////////////////////////////////
+		/////////////////////////////////// Month ///////////////////////////////////////////
+		inputVal = false;
+
+		while (!inputVal) //makes sure the number inputted is between 1-12 before proceeding and enables the user to re-enter the value if not using try-throw-catch.
+		{
+			try 
+			{
+				cout << "Enter the month when the shoe has been purchased (in numerical form): ";
+				cin >> getshoe[i].datePurchase.month;
+				if (getshoe[i].datePurchase.month < 1 || getshoe[i].datePurchase.month > 12) 
+				{
+					throw "Invalid Month! The number (month) inputted should be between 1 (January) and 12 (December) only... Please re-enter the correct value";
+				}//end-if
+				inputVal = true;
+			}//end-try
+
+			catch (const char* msg) 
+			{ 
+				cout << msg << endl;
+			}//end-catch
+		}//end-while
+
+		/////////////////////////////////// Day ///////////////////////////////////////////
+		inputVal = false;
+
+		while (!inputVal) //makes sure the number inputted is between 1-31 before proceeding and enables the user to re-enter the value if not using try-throw-catch.
+		{
+			try 
+			{
+				cout << "Enter the day when the shoe has been purchased (in numerical form): ";
+				cin >> getshoe[i].datePurchase.day;
+				if (getshoe[i].datePurchase.day < 1 || getshoe[i].datePurchase.day > 31) 
+				{
+					throw "Invalid Day! The number (day) inputted should be between 1 and 31 only... Please re-enter the correct value";
+				}//end-if
+				inputVal = true;
+			}//end-try
+
+			catch (const char* msg) 
+			{ 
+				cout << msg << endl;
+			}//end-catch
+		}//end-while
+
+		/////////////////////////////////// Year ///////////////////////////////////////////
+		inputVal = false;
+
+		while (!inputVal) //makes sure the number inputted is between 2000-2021 before proceeding and enables the user to re-enter the value if not using try-throw-catch.
+		{
+			try 
+			{
+				cout << "Enter the year when the shoe has been purchased (in numerical form): ";
+				cin >> getshoe[i].datePurchase.year;
+				if (getshoe[i].datePurchase.year < 2000 || getshoe[i].datePurchase.year > 2021) 
+				{
+					throw "Invalid Year! The number (year) inputted must be between 2000 and 2021 only... Please re-enter the correct value";
+				}//end-if
+				inputVal = true;
+			}//end-try
+
+			catch (const char* msg) 
+			{ 
+				cout << msg << endl;
+			}//end-catch
+		}//end-while
+
+		/////////////////////////////////// SHOEQUANTITY ///////////////////////////////////////////
+		inputVal = false;
+
+		while (!inputVal) //makes sure the number inputted is between 5-50 before proceeding and enables the user to re-enter the value if not using try-throw-catch.
+		{
+			try 
+			{
+				cout << "Enter the ShoeQuantity: ";
+				cin >> getshoe[i].shoeQuantity;
+				if (getshoe[i].shoeQuantity < 5 || getshoe[i].shoeQuantity > 50) 
+				{
+					throw "Invalid Number! The shoe quantity inputted must be between 5 and 50 only... Please re-enter the correct value";
+				}//end-if
+				inputVal = true;
+			}//end-try
+
+			catch (const char* msg) 
+			{ 
+				cout << msg << endl;
+			}//end-catch
+		}//end-while
+
+		/////////////////////////////////// SHOECOST ///////////////////////////////////////////
+		cout << "Enter the ShoeCost: Php";
+		cin >> getshoe[i].shoeCost;
+		cout << endl;
+		
+	}//end-for
+}//end-void-inputShoe
+
+/////////////////////////////////// VOID-COMPVAL ///////////////////////////////////////////
+void compVal(ShoeRecord tValue[], int numShoes) 
+{
+	for (int i = 0; i < numShoes; i++) 
+	{
+		tValue[i].TotalValue = tValue[i].shoeQuantity * tValue[i].shoeCost;
+	}//end-for
+}//end-void-compVal
+
+/////////////////////////////////// VOID-SAVEDATE ///////////////////////////////////////////
+void saveData(ShoeRecord tValue[], int numShoes) 
+{
+	ofstream dout;
+	dout.open("shoeInventory.txt");
+
+		//field/member structure titles.
+		dout << left << setw(15) << "StockNumber" << setw(15) << "ShoeType" << setw(15)
+			<< "ShoeBrand" << setw(15) << "datePurchase" << setw(15) << "shoeQuantity"
+			<< setw(15) << "shoeCost" << "TotalValue" << endl;
+
+		//displays inputted information in tabular format and saved to a textfile.
+		for (int i = 0; i < numShoes; i++) 
+		{
+			dout << left << setw(15) << tValue[i].StockNumber << setw(15) << tValue[i].ShoeType
+				<< setw(15) << tValue[i].ShoeBrand << tValue[i].datePurchase.month
+				<< "/" << tValue[i].datePurchase.day << "/" << setw(10) << tValue[i].datePurchase.year << setw(15)
+				<< tValue[i].shoeQuantity << "Php" << setw(12) << fixed << setprecision(2) << tValue[i].shoeCost << "Php"
+				<< fixed << setprecision(2) << tValue[i].TotalValue << endl;
+		}//end-for
+
+		cout << "The inputted shoe data/record has been analyzed and saved to file successfully... Thank you for using the program!" << endl;
+}//end-void-saveData
